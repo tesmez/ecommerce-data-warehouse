@@ -110,8 +110,7 @@ ecommerce-data-warehouse/
 ├── 📂 tableau/
 │   └── ecommerce_dw_dashboards.twbx       # Phase 3: Tableau workbook (packaged)
 │
-├── 📄 EcommerceDW_Report_Tesfay.pdf       # Final project report (PDF)
-├── 📄 EcommerceDW_Report_Tesfay.tex       # LaTeX source of the report
+├── 📄 Data_warehouse_final_project_proposal.pdf       # Final project report (PDF)
 ├── 📄 requirements.txt                    # Python dependencies
 └── 📄 README.md                           # This file
 ```
