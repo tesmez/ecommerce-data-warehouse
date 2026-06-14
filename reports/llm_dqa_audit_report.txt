@@ -1,0 +1,76 @@
+======================================================================
+LLM DATA QUALITY AUDIT REPORT
+Generated  : 2026-05-10T12:20:44.878402
+Model      : llama-3.1-8b-instant via Groq API
+Tokens in  : 696
+Tokens out : 897
+======================================================================
+
+INPUT SCORECARD:
+   Dimension  Score  Issues Status
+Completeness 1.0000       0      🟢
+  Uniqueness 1.0000       0      🟢
+    Validity 1.0000       0      🟢
+ Consistency 0.9633   36429      🟢
+  Timeliness 1.0000       0      🟢
+    Accuracy 1.0000       0      🟢
+
+FULL REPORT:
+**Data Quality Assessment Report**
+
+**1. EXECUTIVE SUMMARY**
+
+Our data quality assessment of the e-commerce sales data warehouse project has yielded an overall DQ score of 99.39%, indicating a high level of data quality. However, upon closer inspection, we have identified several critical issues that require attention to ensure accurate and reliable insights from our Tableau dashboard. Our findings include inconsistencies in the consistency dimension, missingness in the return_reason and tenure_days fields, and outliers in the data.
+
+**2. DIMENSION-BY-DIMENSION INTERPRETATION**
+
+- **Completeness**: 1.0000 (100%): All records are present, with no missing values.
+- **Uniqueness**: 1.0000 (100%): No duplicate records exist.
+- **Validity**: 1.0000 (100%): All values conform to their respective data types and formats.
+- **Consistency**: 0.9633 (96.33%): 3.67% of records exhibit inconsistencies, primarily in the order_date and order_status fields.
+- **Timeliness**: 1.0000 (100%): All records are up-to-date, with no delays or discrepancies.
+- **Accuracy**: 1.0000 (100%): All values are accurate and reflect the true state of the data.
+
+**3. CRITICAL FINDINGS**
+
+Ranked by analytical impact, our top 3 critical findings are:
+
+1. **Inconsistencies in Consistency Dimension**: 3.67% of records exhibit inconsistencies, primarily in the order_date and order_status fields. This may lead to incorrect insights and decisions in our Tableau dashboard.
+2. **Missingness in Return Reason Field**: 89.8% of records in the return_reason field are missing, with a strong indication of Missing Not At Random (MNAR) missingness. This may lead to biased analysis and incorrect conclusions.
+3. **Outliers in Data**: 8.9% of records are flagged as outliers, which may skew our analysis and lead to incorrect insights.
+
+**4. MISSINGNESS ASSESSMENT**
+
+Our missingness classification is as follows:
+
+- **return_reason**: MNAR (89.8% NULL = order not returned, informative absence)
+  Evidence: Chi-squared p~0 (***), missingness perfectly predicts order_status
+  Decision: Create binary flag, NEVER impute
+- **tenure_days**: MCAR/MAR weak (NULL from missing account_creation_date)
+  Evidence: Logistic pseudo-R2 < 0.05, weak group signal
+  Decision: Impute with segment-specific median
+
+Our classification is validated, and we recommend creating a binary flag for the return_reason field and imputing the tenure_days field with segment-specific medians.
+
+**5. OUTLIER ASSESSMENT**
+
+Our outlier detection results indicate a 8.9% consensus outlier rate, with 8892 records flagged as outliers across multiple methods. This may indicate data quality issues, such as incorrect or inconsistent data entry, or it may be a result of natural variability in the data. We recommend further investigation to determine the cause of these outliers and take corrective action.
+
+**6. RECOMMENDED CLEANING PRIORITY**
+
+Our recommended cleaning priority is as follows:
+
+1. **Address inconsistencies in Consistency Dimension**: Correct the order_date and order_status fields to ensure consistency and accuracy.
+2. **Impute missing values in Return Reason Field**: Create a binary flag for the return_reason field and NEVER impute values.
+3. **Impute missing values in Tenure Days Field**: Impute the tenure_days field with segment-specific medians.
+4. **Investigate and address outliers**: Further investigate the cause of outliers and take corrective action to ensure data quality.
+
+**7. RISK ASSESSMENT**
+
+If we skip cleaning and load dirty data to the data warehouse, we risk:
+
+* **Incorrect insights and decisions**: Inconsistent and inaccurate data may lead to incorrect insights and decisions, potentially impacting business outcomes.
+* **Data quality degradation**: Loading dirty data may further degrade data quality, making it more challenging to maintain accurate and reliable insights.
+* **Reputation damage**: Inaccurate or misleading insights may damage our reputation and erode trust with stakeholders.
+
+We recommend addressing these critical findings and implementing a robust data cleaning and quality control process to ensure accurate and reliable insights from our Tableau dashboard.

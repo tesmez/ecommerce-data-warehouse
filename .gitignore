@@ -1,0 +1,60 @@
+# Data files (too large for GitHub)
+data/*.csv
+data/*.xlsx
+data/*.xls
+data/*.parquet
+
+# Tableau temporary files
+tableau/*.twb
+tableau/ecommerce_dw_extract.hyper
+*.twb
+
+# Database exports
+*.dump
+*.sql.gz
+
+# Environment
+.env
+*.env
+.env.local
+
+# API keys 
+groq_key.txt
+api_keys.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.ipynb_checkpoints/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.jupyter/
+*.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Reports (large HTML)
+reports/*.html
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.bbl
+*.blg

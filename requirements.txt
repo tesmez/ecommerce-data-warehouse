@@ -1,0 +1,32 @@
+# E-Commerce Data Warehouse Project
+# Python 3.11 dependencies
+# Install: pip install -r requirements.txt
+
+# Database
+psycopg2-binary>=2.9.0
+
+# Data manipulation
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Machine learning / outlier detection
+scikit-learn>=1.3.0
+
+# Statistics
+scipy>=1.11.0
+statsmodels>=0.14.0
+
+# Data quality profiling
+ydata-profiling>=4.5.0
+missingno>=0.5.2
+
+# Visualisation
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# LLM integration (Groq API — OpenAI compatible client)
+openai>=1.0.0
+
+# Jupyter
+jupyter>=1.0.0
+ipykernel>=6.0.0

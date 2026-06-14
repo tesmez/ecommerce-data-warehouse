@@ -1,0 +1,7 @@
+Table,Dimension,Score,Issues,Status,Details
+sales_order,Completeness,1.0,0,🟢,Missing per column: {}
+sales_order,Uniqueness,1.0,0,🟢,Duplicate rows on ['order_id']: 0
+sales_order,Validity,1.0,0,🟢,quantity: 0 invalid | unit_price_usd: 0 invalid | discount_percent: 0 invalid | 
+sales_order,Consistency,0.9633,36429,🟢,36429 rows violate at least one consistency rule
+sales_order,Timeliness,1.0,0,🟢,Before 2024-01-01: 0 | After 2026-12-31: 0
+sales_order,Accuracy,1.0,0,🟢,"unit_price plausible (< $10,000): 0 suspect | profit_margin plausible (0–90%): 0"
