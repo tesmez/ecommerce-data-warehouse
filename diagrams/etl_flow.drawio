@@ -1,0 +1,129 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="ETL Architecture - Reconciled to DW" id="qBLGn8hwzSZRXiEgHDBr">
+    <mxGraphModel dx="858" dy="593" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;fillColor=#dae8fc;strokeColor=#6c8ebf;rounded=1;" value="ETL Architecture — ecommerce_reconciled to ecommerce_dw" vertex="1">
+          <mxGeometry height="46" width="1790" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-3" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#922B21;strokeColor=#5B1A12;strokeWidth=2.5;fontColor=#ffffff;fontSize=13;fontStyle=1;" value="ecommerce_reconciled  PostgreSQL 18 12 tables, 3NF 991,930 orders" vertex="1">
+          <mxGeometry height="130" width="200" x="40" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDF2E9;strokeColor=#A04000;strokeWidth=1.5;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#A04000;align=left;spacingLeft=10;spacingTop=8;dashed=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;STAGE 1 — EXTRACT&lt;/font&gt;" vertex="1">
+          <mxGeometry height="560" width="330" x="290" y="131" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A04000;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;div style=&quot;&quot;&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(26, 26, 24), rgb(215, 215, 213));&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Connect via psycopg2  • Single connection pool • SELECT with 9-table JOIN • Reads ecommerce_reconciled.sales_order   joined to all 11 lookup/master tables&lt;/font&gt;&lt;/b&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="90" width="290" x="310" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A04000;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Extract Method: Full Pull  • No incremental/CDC (project scope = static   historical dataset, single load cycle) • Entire reconciled DB read into pandas   DataFrame in memory (991,930 rows)&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="90" width="290" x="310" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A04000;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Chunked Read  • pandas.read_sql() with chunksize=50,000 • Prevents memory overflow on 1M-row table • Chunks concatenated into single DataFrame&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="90" width="290" x="310" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A04000;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Pre-Transform Validation  • Row count check: extracted == source count • Null-check on all 8 foreign key columns • Schema check: dtypes match expected&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="90" width="290" x="310" y="485" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A04000;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Output: Single pandas DataFrame  991,930 rows x 28 columns (flat, denormalised, in-memory)&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="290" x="310" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF3DE;strokeColor=#3B6D11;strokeWidth=1.5;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#3B6D11;align=left;spacingLeft=10;spacingTop=8;dashed=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; STAGE 2 — TRANSFORM&lt;/font&gt;" vertex="1">
+          <mxGeometry height="560" width="380" x="760" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B6D11;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;T1 — Surrogate Key Generation  • VARCHAR natural keys -&amp;gt; sequential INTEGER • customer_id, product_id, etc.&amp;nbsp;&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="340" x="780" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B6D11;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;T2 — Hierarchy Flattening (Denormalise)  • category+sub_category+brand -&amp;gt; single   dim_product row (star, not snowflake)&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="340" x="780" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B6D11;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;T3 — Attribute Binning • age (18-75) -&amp;gt; age_group (4 categories) • delivery_days (1-14) -&amp;gt; days_band (3 bands)&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="340" x="780" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B6D11;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;T4 — MNAR Null Handling • return_reason NULL -&amp;gt; &#39;N/A&#39; string • Preserves structural-null semantics in DW&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="340" x="780" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B6D11;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;T5 — Date Key Formatting  • order_date TIMESTAMP -&amp;gt; date_key INTEGER • Format: YYYYMMDD (e.g. 20240315)&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="340" x="780" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B6D11;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Output: 8 dimension DataFrames + 1 fact DataFrame (all DW-ready, surrogate-keyed)&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="340" x="780" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-17" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6F1FB;strokeColor=#185FA5;strokeWidth=1.5;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#185FA5;align=left;spacingLeft=10;spacingTop=8;dashed=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; STAGE 3 — LOAD&lt;/font&gt;" vertex="1">
+          <mxGeometry height="560" width="320" x="1290" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-18" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#185FA5;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Load Strategy: Truncate-and-Reload  TRUNCATE TABLE ... CASCADE applied to all 9 DW tables before each run&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="280" x="1310" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-19" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#185FA5;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Load Order (FK-safe sequence)  1. All 8 dimension tables (parents) 2. FACT_SALES last (has 8 FK references)&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="280" x="1310" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-20" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#185FA5;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;div style=&quot;&quot;&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(26, 26, 24), rgb(215, 215, 213));&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Bulk Insert Method psycopg2.extras.execute_values() 10,000-row batches per INSERT statement&lt;/font&gt;&lt;/b&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="280" x="1311" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDEBD0;strokeColor=#E67E22;strokeWidth=1.5;fontSize=9;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Error Handling — Rejected Rows  • SKIPPED • 8,193 rows rejected (0.8% of source) •&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="100" width="280" x="1310" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#185FA5;strokeWidth=1.5;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontColor=#1A1A18;" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Post-Load Verification  • Row count check per table (expected vs actual) • FK integrity: sample JOIN across all 9 tables • Aggregate check: SUM(revenue) reconciled   against source sales_order total&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="125" width="280" x="1310" y="555" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-23" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#1A5276;strokeColor=#0D2B45;strokeWidth=2.5;fontColor=#ffffff;fontSize=13;fontStyle=1;" value="ecommerce_dw  PostgreSQL 18 9 tables, Star Schema 991,930 fact rows" vertex="1">
+          <mxGeometry height="130" width="200" x="1680" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-24" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#555555;strokeWidth=3;endArrow=block;endFill=1;fontSize=11;fontStyle=1;" target="AWAsC224ZLTU7Q-lYc_J-4" value="EXTRACT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-25" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#555555;strokeWidth=3;endArrow=block;endFill=1;fontSize=11;fontStyle=1;" target="AWAsC224ZLTU7Q-lYc_J-10" value="TRANSFORM">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-26" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#555555;strokeWidth=3;endArrow=block;endFill=1;fontSize=11;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="AWAsC224ZLTU7Q-lYc_J-17" value="LOAD">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1150" y="410" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-27" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#555555;strokeWidth=3;endArrow=block;endFill=1;fontSize=11;fontStyle=1;" target="AWAsC224ZLTU7Q-lYc_J-23" value="WRITE">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-28" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-29" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-7" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-30" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-8" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-31" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-9" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-32" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-12" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-33" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-13" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-34" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-14" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-35" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-15" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-36" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-16" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-37" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-19" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-38" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-20" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-39" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-21" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AWAsC224ZLTU7Q-lYc_J-40" edge="1" parent="1" source="AWAsC224ZLTU7Q-lYc_J-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;strokeWidth=1.2;endArrow=open;endFill=1;startArrow=none;" target="AWAsC224ZLTU7Q-lYc_J-22" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
