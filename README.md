@@ -96,6 +96,7 @@ ecommerce-data-warehouse/
 │   ├── er_schema.drawio                   # Phase 1: E/R diagram (draw.io)
 │   ├── dfm_schema.drawio                  # Phase 1: DFM fact schema (draw.io)
 │   └── star_schema.drawio                 # Phase 1: Star schema diagram (draw.io)
+    └── etl_flow.drawio                    # Phase 2: ETL Architecture
 │
 ├── 📂 reports/
 │   ├── dq_scorecard_sales_order.csv       # Phase 2: ISO 25012 DQ scorecard
