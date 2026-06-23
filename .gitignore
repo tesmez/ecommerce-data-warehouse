@@ -6,7 +6,7 @@ data/*.parquet
 
 # Tableau temporary files
 tableau/*.twb
-tableau/ecommerce_dw_extract.hyper
+#tableau/ecommerce_dw_extract.hyper
 *.twb
 
 # Database exports
